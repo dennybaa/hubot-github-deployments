@@ -182,7 +182,11 @@ module.exports = (robot) ->
       data['auto_merge'] = auto_merge == 'true' if auto_merge
 
       github.deployments(app).create ref, data, (deployment) ->
-        res.send deployment.description
+        if deployment.errors and deployment.errors.length > 0
+          res.send deployment.message
+        else
+          res.send deployment.description
+
     else
       res.send "\"#{target}\" not in available deploy targets. Use `deploy list targets`"
 
